@@ -17,7 +17,7 @@ setup(name='livescore_client',
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3.6.1',
-        'Topic :: Internet :: WWW/HTTP :: Dynamic Content,
+        'Topic :: Internet :: WWW/HTTP :: Dynamic Content
       ],
       keywords='livescore api',
       url='https://github.com/Livescore-api/sdk-python',
