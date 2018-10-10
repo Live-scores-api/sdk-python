@@ -7,7 +7,7 @@ Created on Sat Oct  6 21:39:23 2018
 """
 
 import urllib.request
-
+import json
 
 class livescores:
     """
@@ -28,35 +28,41 @@ class livescores:
     get_all()
     
     """
-    def __init__(self,key,secret):
-        self.key = key 
-        self.secret = secret 
+    link_get_all = "http://livescore-api.com/api-client/scores/live.json?key={}&secret={}"
+   
+    def __init__(self, key, secret):
+        
+        try: 
+            key.strip()
+            secret.strip()
+            assert len(key) == 16
+            assert len(secret) == 32
+            self.key = key
+            self.secret = secret 
+            
+        except Exception as e:
+            print("Key or Secret is Empty!")
     
-    def _get_html_file(self,link):
+    def _make_api_call(self, link):
         """returns the source code given a link"""
     
         try:
-            html_file = urllib.request.urlopen(link)
-            return html_file
-        except Exception as e:
-            print(str(e))
+            http_response_object = urllib.request.urlopen(link)
+            if http_response_object is not None: 
+                json_string = http_response_object.read().decode('utf-8')
+                json_dic = json.loads(json_string)
+                return json_dic
+            
+        except urllib.error.HTTPError as e:
+            print (str(e))
+        
+        except urllib.error.URLError as e:
+            print (str(e))
+        
+        except urllib.error.ContentTooShortError as e:
+            print (str(e))
             
     def get_all(self):
         """returns all the livescores"""
-        
-        link = "http://livescore-api.com/api-client/scores/live.json?key={}&secret={}".format(self.key,self.secret)
-        html_file = self._get_html_file(link)
-        if html_file is not None: 
-            json_data = html_file.read()
-            return json_data
-        
-    
-    
-    
-    
-    
-
-        
-                
-    
-
+        link = self.link_get_all.format(self.key,self.secret)
+        return self._make_api_call(link)
