@@ -7,14 +7,23 @@ Created on Sat Oct  6 21:39:23 2018
 """
 
 import urllib.request
+import requests
 
 
-class livescores:
+class Livescores:
+
+    api_url = ''
+    api_key = ''
+    api_secret = ''
+
+    def __init__(self, api_url, api_key, api_secret):
+        self.api_url = api_url
+        self.api_key = api_key
+        self.api_secret = api_secret
     
-    def get_all(key,secret):
-        html_file = urllib.request.urlopen("http://livescore-api.com/api-client/scores/live.json?key=" + key + "&secret=" + secret)
-        json_data = html_file.read()
-        return json_data
+    def get_all_livescores(self):
+       livescores = requests.get('{}scores/live.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret))
+       return livescores.json()
     
 
         
