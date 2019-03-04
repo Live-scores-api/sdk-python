@@ -3,8 +3,8 @@ import json
 import livescoreapi
 
 api_url = 'http://livescore-api.com/api-client/'
-api_key = ''
-api_secret = ''
+api_key = 'y8DJGiYc5aVpjxt9'
+api_secret = 'zQKdGfauTTGAXlp4EYYCJ2jfkIoEzwpL'
 
 
 def livescores_api(api_url,api_key,api_secret):
@@ -26,7 +26,7 @@ def by_league(api_url,api_key,api_secret, league_id, language_id):
 
 #r=livescores_api(api_url,api_key,api_secret)
 #print(r)
-cntry=by_country(api_url,api_key,api_secret, 12, "fa")
+cntry=by_country(api_url,api_key,api_secret, 12, "en")
 print(cntry)
-liga=by_league(api_url,api_key,api_secret, 38, "bg")
-print(liga)
+#liga=by_league(api_url,api_key,api_secret, 38, "bg")
+#print(liga)
