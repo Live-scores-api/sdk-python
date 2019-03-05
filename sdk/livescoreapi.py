@@ -7,16 +7,21 @@ from urllib.parse import urlparse
 
 class Livescores: 
 
-    def validate_key(self, api_key):
-        if not api_key:
-            raise ValueError("None API Key!")
-        if re.match("^[A-Za-z0-9]*$", api_key) and len(api_key) == 16:
-            return True
-        else:
-            raise ValueError("Wrong API Key!")
-    
+    @staticmethod
+    def validate_key(api_key):
+        if api_key is None:
+            raise ValueError("Api key cannot be None")
 
-    def validate_secret(self, api_secret):
+        if type(api_key) != str:
+            raise ValueError("Api key must be a string")
+
+        if not(re.match("^[A-Za-z0-9]*$", api_key)) or len(api_key) != 16:
+            raise ValueError("Api key has invalid format")
+
+        return
+    
+    @staticmethod
+    def validate_secret(api_secret):
         if not api_secret:
             raise ValueError("None API Secret!")
         if re.match("^[A-Za-z0-9]*$", api_secret) and len(api_secret) == 32:
@@ -27,32 +32,26 @@ class Livescores:
     def validate_url(self, api_url):
         if not api_url:
             raise ValueError("None API URL!")
-        
-       
-    
+
     language_list = ['en', 'ar', 'ru', 'fa']
     api_url = 'http://livescore-api.com/api-client/'
     api_key = '5555YYYYgggg21aD'
     api_secret = '5555YYYYgggg21aDKKKK2222ssssYYYY'
-    
-      
 
     def __init__(self, api_url, api_key, api_secret, language='en'):
-        self.api_url = api_url
-        if api_url is not None:
-            self.validate_url(api_url)
-        self.api_key = api_key
-        if api_key is not None:
-            self.validate_key(api_key)
+        self.validate_url(api_url)
+        self.validate_key(api_key)
         self.api_secret = api_secret
+
         if api_secret is not None:
             self.validate_secret(api_secret)
+
+        self.api_url = api_url
+        self.api_key = api_key
         lang_check = self.validate_language(language)
         if lang_check is True:
             self.lang = language
 
-
-    
     def get_all_livescores(self, country_id, league_id):
         url = '{}scores/live.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
         if country_id is not None:
