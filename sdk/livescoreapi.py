@@ -5,7 +5,26 @@ import datetime
 from urllib.parse import urlparse
 
 
-class Livescores: 
+class LivescoreApi:
+
+    language_list = ['en', 'ar', 'ru', 'fa']
+    api_url = 'http://livescore-api.com/api-client/'
+    api_key = '5555YYYYgggg21aD'
+    api_secret = '5555YYYYgggg21aDKKKK2222ssssYYYY'
+
+    def __init__(self, api_url, api_key, api_secret, language='en'):
+        self.validate_url(api_url)
+        self.validate_key(api_key)
+        self.api_secret = api_secret
+
+        if api_secret is not None:
+            self.validate_secret(api_secret)
+
+        self.api_url = api_url
+        self.api_key = api_key
+        lang_check = self.validate_language(language)
+        if lang_check is True:
+            self.lang = language
 
     @staticmethod
     def validate_key(api_key):
@@ -33,25 +52,6 @@ class Livescores:
         if not api_url:
             raise ValueError("None API URL!")
 
-    language_list = ['en', 'ar', 'ru', 'fa']
-    api_url = 'http://livescore-api.com/api-client/'
-    api_key = '5555YYYYgggg21aD'
-    api_secret = '5555YYYYgggg21aDKKKK2222ssssYYYY'
-
-    def __init__(self, api_url, api_key, api_secret, language='en'):
-        self.validate_url(api_url)
-        self.validate_key(api_key)
-        self.api_secret = api_secret
-
-        if api_secret is not None:
-            self.validate_secret(api_secret)
-
-        self.api_url = api_url
-        self.api_key = api_key
-        lang_check = self.validate_language(language)
-        if lang_check is True:
-            self.lang = language
-
     def get_all_livescores(self, country_id, league_id):
         url = '{}scores/live.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
         if country_id is not None:
@@ -66,7 +66,6 @@ class Livescores:
         livescores = requests.get(url)
         return livescores.json()
 
-
     def validate_country(self, country_id):
         if country_id is None:
             raise ValueError("Country ID must be defined")
@@ -74,16 +73,14 @@ class Livescores:
             raise ValueError("Country ID must be a integer")
         if country_id <= 0:
             raise ValueError("Country ID must be a positive number")
-        
-       
+
     def validate_language(self, language_id): 
         if language_id is None:
-             raise ValueError("Language ID must be defined")
+            raise ValueError("Language ID must be defined")
         if not (isinstance(language_id, str)):
             raise ValueError("Language ID must be a string")
         if language_id in self.language_list:
             return True
-
 
     def validate_league(self, league_id):
         if league_id is None:
@@ -99,7 +96,7 @@ class Livescores:
     def get_livescores_by_league(self, league_id):
         return self.get_all_livescores(None, league_id)
 
-    def get_all_fixtrures(self, country_id, league_id, date):
+    def get_all_fixtures(self, country_id, league_id, date):
         url = '{}fixtures/matches.json?key={}&secret={}&date={}&v'.format(self.api_url, self.api_key, self.api_secret, date)
         if country_id is not None:
             self.validate_country(country_id)
@@ -113,9 +110,9 @@ class Livescores:
         fixtures = requests.get(url)
         return fixtures.json()
 
-    def get_fixtrures_by_country(self, country_id):
+    def get_fixtures_by_country(self, country_id):
         return self.get_all_fixtrures(country_id, None, None)
 
-    def get_todays_fixtures(self):
+    def get_today_fixtures(self):
         today = str(datetime.datetime.today())[:10]
-        return self.get_all_fixtrures(None, None, today)
+        return self.get_all_fixtures(None, None, today)
