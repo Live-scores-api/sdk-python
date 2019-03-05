@@ -93,17 +93,14 @@ class Livescores:
         if league_id <= 0:
             raise ValueError("Wrong league ID")
 
-
     def get_livescores_by_country(self, country_id):
         return self.get_all_livescores(country_id, None)
 
-                
     def get_livescores_by_league(self, league_id):
         return self.get_all_livescores(None, league_id)
 
-
     def get_all_fixtrures(self, country_id, league_id, date):
-        url = '{}fixtures/matches.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
+        url = '{}fixtures/matches.json?key={}&secret={}&date={}&v'.format(self.api_url, self.api_key, self.api_secret, date)
         if country_id is not None:
             self.validate_country(country_id)
             url = url + '&country_id=' + str(country_id)
@@ -116,10 +113,9 @@ class Livescores:
         fixtures = requests.get(url)
         return fixtures.json()
 
-
     def get_fixtrures_by_country(self, country_id):
         return self.get_all_fixtrures(country_id, None, None)
 
-
     def get_todays_fixtures(self):
-        return self.get_all_fixtrures(None, None, date)
+        today = str(datetime.datetime.today())[:10]
+        return self.get_all_fixtrures(None, None, today)
