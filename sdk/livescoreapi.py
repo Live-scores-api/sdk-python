@@ -54,7 +54,7 @@ class LivescoresAPI:
     
     
     def get_all_livescores(self, country_id, league_id):
-        url = '{}scores/live.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
+        url = '{}scores/live.json?key={}&secret={}&lang=en'.format(self.api_url, self.api_key, self.api_secret)
         if country_id is not None:
             self.validate_country(country_id)
             url = url + '&country=' + str(country_id)
