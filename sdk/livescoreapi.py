@@ -70,8 +70,8 @@ class LivescoresAPI:
 
         if not re.match(regex, api_url):
             raise ValueError("API URL is not valid")
-            
-        if not "livescore-api.com" in api_url:
+
+        if "livescore-api.com" not in api_url:
             raise ValueError("API URL does not contain livescore-api.com")
     
     def get_all_livescores(self, country_id, league_id):

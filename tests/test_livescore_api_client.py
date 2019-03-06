@@ -4,8 +4,8 @@ import pytest
 
 def test_init_api_key_is_none():
     with pytest.raises(ValueError) as ex:
-        sdk.livescoreapi.LivescoresAPI('http://example.com', None, 'this-is-api-secret', 'en')
-    assert 'Api key cannot be None' in str(ex)
+        sdk.livescoreapi.LivescoresAPI('http://livescore-api.com/api-client/', None, '5555YYYYgggg21aDKKKK2222ssssYYYY', 'en')
+    assert 'API Key must be defined!' in str(ex)
 
 
 @pytest.mark.parametrize("value", [
@@ -18,8 +18,8 @@ def test_init_api_key_is_none():
 ])
 def test_init_api_key_is_not_string(value):
     with pytest.raises(ValueError) as ex:
-        sdk.livescoreapi.LivescoresAPI('http://example.com', value, 'this-is-api-secret', 'en')
-    assert 'Api key must be a string' in str(ex)
+        sdk.livescoreapi.LivescoresAPI('http://livescore-api.com/api-client/', value, '5555YYYYgggg21aDKKKK2222ssssYYYY', 'en')
+    assert 'API Key must be a string' in str(ex)
 
 
 @pytest.mark.parametrize("value", [
@@ -32,13 +32,13 @@ def test_init_api_key_is_not_string(value):
 ])
 def test_init_api_key_is_not_16_characters(value):
     with pytest.raises(ValueError) as ex:
-        sdk.livescoreapi.LivescoresAPI('http://example.com', value, 'this-is-api-secret', 'en')
-    assert 'Api key has invalid format' in str(ex)
+        sdk.livescoreapi.LivescoresAPI('http://livescore-api.com/api-client/', value, '5555YYYYgggg21aDKKKK2222ssssYYYY', 'en')
+    assert 'Invalid API Key format!' in str(ex)
 
 
 def test_init_ok():
-    client = sdk.livescoreapi.LivescoresAPI('http://example.com', '0123456789123456', '01234567891234560123456789123456', 'en')
-    assert client.api_key == '0123456789123456'
+    client = sdk.livescoreapi.LivescoresAPI('http://livescore-api.com/api-client/', '5555YYYYgggg21aD', '5555YYYYgggg21aDKKKK2222ssssYYYY', 'en')
+    assert client.api_key == '5555YYYYgggg21aD'
 
 
 
@@ -53,3 +53,15 @@ def test_validate_url(value):
              sdk.livescoreapi.LivescoresAPI(value, 'this-is-api-key', 'this-is-api-secret', 'en')
     assert 'API URL is not valid' in str(ex)
 
+
+
+@pytest.mark.parametrize("value", [
+    "bg",
+    "es",
+    "br",
+    "dk",
+])
+def test_validate_language(value):
+    with pytest.raises(ValueError) as ex:
+             sdk.livescoreapi.LivescoresAPI('http://livescore-api.com/api-client/', '5555YYYYgggg21aD', '5555YYYYgggg21aDKKKK2222ssssYYYY', value)
+    assert 'Language ID is not supported' in str(ex)
