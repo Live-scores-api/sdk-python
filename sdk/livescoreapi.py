@@ -60,10 +60,19 @@ class LivescoresAPI:
         if not (isinstance(api_url, str)):
             raise ValueError("API URL must be a string")
 
-        request = requests.get('http://livescore-api.com')
-        if not request.status_code == 200:
-             raise ValueError("API URL does not exist")
-        
+        regex = re.compile(
+        r'^(?:http|ftp)s?://' # http:// or https://
+        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|' #domain...
+        r'localhost|' #localhost...
+        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})' # ...or ip
+        r'(?::\d+)?' # optional port
+        r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+
+        if not re.match(regex, api_url):
+            raise ValueError("API URL is not valid")
+            
+        if not "livescore-api.com" in api_url:
+            raise ValueError("API URL does not contain livescore-api.com")
     
     def get_all_livescores(self, country_id, league_id):
         url = '{}scores/live.json?key={}&secret={}&lang=en'.format(self.api_url, self.api_key, self.api_secret)
