@@ -37,9 +37,11 @@ def test_init_api_key_is_not_16_characters(value):
 
 
 def test_init_ok():
-    client = sdk.livescoreapi.LivescoresAPI('http://livescore-api.com/api-client/', '5555YYYYgggg21aD', '5555YYYYgggg21aDKKKK2222ssssYYYY', 'en')
+    client = sdk.livescoreapi.LivescoresAPI('http://livescore-api.com/api-client/', '5555YYYYgggg21aD', '5555YYYYgggg21aDKKKK2222ssssYYYY', 'ru')
+    assert client.api_url == 'http://livescore-api.com/api-client/'
     assert client.api_key == '5555YYYYgggg21aD'
-
+    assert client.api_secret == '5555YYYYgggg21aDKKKK2222ssssYYYY'
+    assert client.lang == 'ru'
 
 
 @pytest.mark.parametrize("value", [

@@ -11,9 +11,9 @@ class LivescoresAPI:
     api_url = 'http://livescore-api.com/api-client/'
     api_key = ''
     api_secret = ''
+    
 
-
-    def __init__(self, api_url, api_key, api_secret, language='en'):
+    def __init__(self, api_url, api_key, api_secret, language):
         self.validate_url(api_url)
         self.validate_key(api_key)
         self.validate_secret(api_secret)
@@ -75,7 +75,7 @@ class LivescoresAPI:
             raise ValueError("API URL does not contain livescore-api.com")
     
     def get_all_livescores(self, country_id, league_id):
-        url = '{}scores/live.json?key={}&secret={}&lang=en'.format(self.api_url, self.api_key, self.api_secret)
+        url = '{}scores/live.json?key={}&secret={}&lang={}'.format(self.api_url, self.api_key, self.api_secret, self.lang)
 
         if country_id is not None:
             self.validate_country(country_id)
@@ -86,7 +86,7 @@ class LivescoresAPI:
             url = url + '&league=' + str(league_id)
 
         livescores = requests.get(url)
-        return livescores.json()
+        return livescores.json()['data']['match']
 
 
     def validate_country(self, country_id):
@@ -143,7 +143,7 @@ class LivescoresAPI:
 
 
     def get_all_fixtures(self, country_id, league_id, date):
-        url = '{}fixtures/matches.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
+        url = '{}fixtures/matches.json?key={}&secret={}&lang={}'.format(self.api_url, self.api_key, self.api_secret, self.lang)
 
         if country_id is not None:
             self.validate_country(country_id)
