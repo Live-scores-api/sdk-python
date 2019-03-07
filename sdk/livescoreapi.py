@@ -7,22 +7,23 @@ from urllib.parse import urlparse
 
 class LivescoresAPI: 
 
-    language_list = ['en', 'ar', 'ru', 'fa']
+    language_list = ['ar', 'ru', 'fa']
     api_url = ''
     api_key = ''
     api_secret = ''
-    
+    language = ''
 
     def __init__(self, api_url, api_key, api_secret, language):
         self.validate_url(api_url)
         self.validate_key(api_key)
         self.validate_secret(api_secret)
-        self.validate_language(language)
+        if language is not None:
+            self.validate_language(language)
 
         self.api_url = api_url
         self.api_key = api_key
         self.api_secret = api_secret
-        self.lang = language
+        self.language = language
 
 
     @staticmethod
@@ -75,11 +76,14 @@ class LivescoresAPI:
             raise ValueError("API URL does not contain livescore-api.com")
     
     def get_all_livescores(self, country_id, league_id):
-        url = '{}scores/live.json?key={}&secret={}&lang={}'.format(self.api_url, self.api_key, self.api_secret, self.lang)
+        url = '{}scores/live.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
 
         if country_id is not None:
             self.validate_country(country_id)
             url = url + '&country=' + str(country_id)
+
+        if self.language is not None:
+            url = url + '&lang=' + self.language
 
         if league_id is not None:
             self.validate_league(league_id)
@@ -126,11 +130,9 @@ class LivescoresAPI:
 
 
     def get_livescores_by_country(self, country_id):
+
         return self.get_all_livescores(country_id, None)
 
                 
     def get_livescores_by_league(self, league_id):
         return self.get_all_livescores(None, league_id)
-
-
-   
