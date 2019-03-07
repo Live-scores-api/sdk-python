@@ -130,7 +130,6 @@ class LivescoresAPI:
 
 
     def get_livescores_by_country(self, country_id):
-
         return self.get_all_livescores(country_id, None)
 
                 
