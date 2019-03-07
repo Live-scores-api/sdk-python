@@ -8,7 +8,7 @@ from urllib.parse import urlparse
 class LivescoresAPI: 
 
     language_list = ['en', 'ar', 'ru', 'fa']
-    api_url = 'http://livescore-api.com/api-client/'
+    api_url = ''
     api_key = ''
     api_secret = ''
     
@@ -97,7 +97,7 @@ class LivescoresAPI:
         if not (isinstance(country_id, int)):
             raise ValueError("Country ID must be an integer")
 
-        if not country_id > 0:
+        if country_id < 1:
             raise ValueError("Country ID must be a positive number")
         
        
@@ -109,7 +109,7 @@ class LivescoresAPI:
         if not (isinstance(language_id, str)):
             raise ValueError("Language ID must be a string")
 
-        if not language_id in self.language_list:
+        if language_id not in self.language_list:
             raise ValueError("Language ID is not supported")
 
 
@@ -121,17 +121,8 @@ class LivescoresAPI:
         if not (isinstance(league_id, int)):
             raise ValueError("League ID must be a integer")
 
-        if not league_id > 0:
+        if league_id < 1:
             raise ValueError("League ID must be a positive number")
-
-
-    def validate_date(self, date):
-
-        if date is None:
-            raise ValueError('Date must be defined')
-
-        if not datetime.datetime.strptime(date, '%Y-%m-%d'):
-            raise ValueError('Invalid date format')
 
 
     def get_livescores_by_country(self, country_id):
@@ -142,37 +133,4 @@ class LivescoresAPI:
         return self.get_all_livescores(None, league_id)
 
 
-    def get_all_fixtures(self, country_id, league_id, date):
-        url = '{}fixtures/matches.json?key={}&secret={}&lang={}'.format(self.api_url, self.api_key, self.api_secret, self.lang)
-
-        if country_id is not None:
-            self.validate_country(country_id)
-            url = url + '&country_id=' + str(country_id)
-
-        if league_id is not None:
-            self.validate_league(league_id)
-            url = url + '&league=' + str(league_id)
-
-        if date is not None:
-            self.validate_date(date)
-            url = url + '&date=' + str(date)
-        fixtures = requests.get(url)
-        return fixtures.json()
-
-
-    def get_fixtures_by_country(self, country_id):
-        return self.get_all_fixtures(country_id, None, None)
-
-
-    def get_fixtrures_by_league(self, league_id):
-        return self.get_all_fixtures(None, league_id, None)
-
-
-    def get_today_fixtures(self):
-        today = str(datetime.datetime.today())[:10]
-        return self.get_all_fixtures(None, None, today)
-
-
-    def get_tomorrow_fixtures(self):
-        tomorrow = str(datetime.date.today() + datetime.timedelta(days=1))[:10]
-        return self.get_all_fixtures(None, None, tomorrow)
+   
