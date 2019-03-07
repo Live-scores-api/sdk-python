@@ -135,3 +135,62 @@ class LivescoresAPI:
                 
     def get_livescores_by_league(self, league_id):
         return self.get_all_livescores(None, league_id)
+
+
+    def validate_date(self, date):
+
+        if date is None:
+            raise ValueError('Date must be defined')
+
+        if not (isinstance(date, str)):
+            raise ValueError("Date must be a string")
+
+        if not datetime.datetime.strptime(date, '%Y-%m-%d'):
+            raise ValueError('Invalid date format')
+
+    def validate_page(self, page):
+        
+        if page is None:
+             raise ValueError('Page ID must be defined')
+
+        if not (isinstance(page, int)):
+            raise ValueError("Page ID must be a integer")
+
+        if page < 1:
+            raise ValueError("Page ID must be a positive number")
+
+
+    def get_all_fixtures(self, league_id, date, page):
+        url = '{}fixtures/matches.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
+
+        if league_id is not None:
+            self.validate_league(league_id)
+            url = url + '&league=' + str(league_id)
+
+        if date is not None:
+            self.validate_date(date)
+            url = url + '&date=' + str(date)
+
+        if self.language is not None:
+            url = url + '&lang=' + self.language
+
+        if page is not None:
+            self.validate_page(page)
+            url = url + '&page=' + str(page)
+
+        fixtures = requests.get(url)
+        return fixtures.json()['data']['fixtures']
+
+
+    def get_fixtrures_by_league(self, league_id, page):
+        return self.get_all_fixtures(league_id, None, page)
+
+
+    def get_today_fixtures(self, page):
+        today = str(datetime.datetime.today())[:10]
+        return self.get_all_fixtures(None, today, page)
+
+
+    def get_tomorrow_fixtures(self, page):
+        tomorrow = str(datetime.date.today() + datetime.timedelta(days=1))[:10]
+        return self.get_all_fixtures(None, tomorrow, page)
