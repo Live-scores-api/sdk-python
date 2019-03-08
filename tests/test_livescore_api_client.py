@@ -37,11 +37,11 @@ def test_init_api_key_is_not_16_characters(value):
 
 
 def test_init_ok():
-    client = sdk.livescoreapi.LivescoresAPI('http://livescore-api.com/api-client/', '5555YYYYgggg21aD', '5555YYYYgggg21aDKKKK2222ssssYYYY', 'en')
+    client = sdk.livescoreapi.LivescoresAPI('http://livescore-api.com/api-client/', '5555YYYYgggg21aD', '5555YYYYgggg21aDKKKK2222ssssYYYY', 'ru')
     assert client.api_url == 'http://livescore-api.com/api-client/'
     assert client.api_key == '5555YYYYgggg21aD'
     assert client.api_secret == '5555YYYYgggg21aDKKKK2222ssssYYYY'
-    assert client.lang == 'en'
+    assert client.language == 'ru'
 
 
 @pytest.mark.parametrize("value", [
@@ -67,3 +67,16 @@ def test_validate_language(value):
     with pytest.raises(ValueError) as ex:
              sdk.livescoreapi.LivescoresAPI('http://livescore-api.com/api-client/', '5555YYYYgggg21aD', '5555YYYYgggg21aDKKKK2222ssssYYYY', value)
     assert 'Language ID is not supported' in str(ex)
+
+
+
+@pytest.mark.parametrize("value", [
+    "2019-3-8",
+    "03-08-2019",
+    "08-03-2019",
+    "2019-08-03",
+])
+def test_get_all_fixtures_validate_date(value):
+    with pytest.raises(ValueError) as ex:
+             sdk.livescoreapi.LivescoresAPI.get_all_fixtures('Why_need_this', 'league_id', value, '2')
+    assert 'Invalid date format' in str(ex)
