@@ -1,7 +1,6 @@
 import sdk.livescoreapi
 import pytest
 
-
 def test_init_api_key_is_none():
     with pytest.raises(ValueError) as ex:
         sdk.livescoreapi.LivescoresAPI('http://livescore-api.com/api-client/', None, '5555YYYYgggg21aDKKKK2222ssssYYYY', 'en')
@@ -75,8 +74,9 @@ def test_validate_language(value):
     "03-08-2019",
     "08-03-2019",
     "2019-08-03",
+    "",
 ])
 def test_get_all_fixtures_validate_date(value):
     with pytest.raises(ValueError) as ex:
-             sdk.livescoreapi.LivescoresAPI.get_all_fixtures('Why_need_this', 'league_id', value, '2')
+             sdk.livescoreapi.LivescoresAPI.get_all_fixtures("self.api_url", 'league_id', value, 'page')
     assert 'Invalid date format' in str(ex)
