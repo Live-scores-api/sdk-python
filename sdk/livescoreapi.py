@@ -145,7 +145,7 @@ class LivescoresAPI:
         if not (isinstance(date, str)):
             raise ValueError("Date must be a string")
 
-        if not datetime.datetime.strptime(date, '%Y-%m-%d'):
+        if date != '%Y-%m-%d':
             raise ValueError('Invalid date format')
 
     def validate_page(self, page):
@@ -194,3 +194,5 @@ class LivescoresAPI:
     def get_tomorrow_fixtures(self, page):
         tomorrow = str(datetime.date.today() + datetime.timedelta(days=1))[:10]
         return self.get_all_fixtures(None, tomorrow, page)
+
+
