@@ -198,7 +198,7 @@ class LivescoresAPI:
         return self.get_all_fixtures(None, tomorrow, page)
 
 
-    def get_history_fixtures(self, from_date, to_date, league_id, page, language):
+    def get_history_matches(self, from_date, to_date, league_id, page, language):
         url = '{}scores/history.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
 
         if from_date is not None:
@@ -224,13 +224,45 @@ class LivescoresAPI:
         return history_fixtures.json()['data']['match']
 
 
-    def get_history_fixtrures_by_league(self, league_id, page, language):
-        return self.get_history_fixtures(None, None, league_id, page, language)
+    def get_history_matches_by_league(self, league_id, page, language):
+        return self.get_history_matches(None, None, league_id, page, language)
 
 
-    def get_history_fixtures_from_date(self, from_date, page, language):
-        return self.get_history_fixtures(from_date, None, None, page, language)
+    def get_history_matches_by_league_and_from_date(self, from_date, league_id, page, language):
+        return self.get_history_matches(from_date, None, league_id, page, language)
+
+
+    def get_history_matches_by_league_and_to_date(self, to_date, league_id, page, language):
+        return self.get_history_matches(None, to_date, league_id, page, language)
+
+
+    def get_history_matches_from_date(self, from_date, page, language):
+        return self.get_history_matches(from_date, None, None, page, language)
 
     
-    def get_history_fixtures_to_date(self, to_date, page, language):
-        return self.get_history_fixtures(None, to_date, None, page, language)
+    def get_history_matches_to_date(self, to_date, page, language):
+        return self.get_history_matches(None, to_date, None, page, language)
+
+    
+    def get_history_matches_from_date_to_date(self, from_date, to_date, page, language):
+        return self.get_history_matches(from_date, to_date, None, page, language)
+
+
+    def get_history_matches_for_yesterday(self, page, language):
+        yesterday = str(datetime.date.today() - datetime.timedelta(days=1))[:10]
+        return self.get_history_matches(yesterday, None, None, page, language)
+
+
+    def get_history_matches_for_last_week(self, page, language):
+        last_week = str(datetime.date.today() - datetime.timedelta(days=7))[:10]
+        return self.get_history_matches(last_week, None, None, page, language)
+
+    
+    def get_history_matches_for_last_month(self, page, language):
+        last_month = str(datetime.date.today() - datetime.timedelta(days=30))[:10]
+        return self.get_history_matches(last_month, None, None, page, language)
+
+    
+    def get_history_matches_for_last_year(self, page, language):
+        last_year= str(datetime.date.today() - datetime.timedelta(days=365))[:10]
+        return self.get_history_matches(last_year, None, None, page, language)
