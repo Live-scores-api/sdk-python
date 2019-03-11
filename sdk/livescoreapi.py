@@ -145,8 +145,10 @@ class LivescoresAPI:
         if not (isinstance(date, str)):
             raise ValueError("Date must be a string")
 
-        if date != '%Y-%m-%d':
-            raise ValueError('Invalid date format')
+        try:
+            datetime.datetime.strptime(date, '%Y-%m-%d')
+        except ValueError:
+            raise ValueError("Incorrect data format, should be %Y-%m-%d")
 
     def validate_page(self, page):
         
@@ -196,3 +198,39 @@ class LivescoresAPI:
         return self.get_all_fixtures(None, tomorrow, page)
 
 
+    def get_history_fixtures(self, from_date, to_date, league_id, page, language):
+        url = '{}scores/history.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
+
+        if from_date is not None:
+            self.validate_date(from_date)
+            url = url + '&from=' + str(from_date)
+
+        if to_date is not None:
+            self.validate_date(to_date)
+            url = url + '&to=' + str(to_date)
+        
+        if league_id is not None:
+            self.validate_league(league_id)
+            url = url + '&league=' + str(league_id)
+
+        if page is not None:
+            self.validate_page(page)
+            url = url + '&page=' + str(page)
+
+        if self.language is not None:
+            url = url + '&lang=' + self.language
+
+        history_fixtures = requests.get(url)
+        return history_fixtures.json()['data']['match']
+
+
+    def get_history_fixtrures_by_league(self, league_id, page, language):
+        return self.get_history_fixtures(None, None, league_id, page, language)
+
+
+    def get_history_fixtures_from_date(self, from_date, page, language):
+        return self.get_history_fixtures(from_date, None, None, page, language)
+
+    
+    def get_history_fixtures_to_date(self, to_date, page, language):
+        return self.get_history_fixtures(None, to_date, None, page, language)

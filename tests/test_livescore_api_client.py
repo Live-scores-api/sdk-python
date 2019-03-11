@@ -73,14 +73,14 @@ def test_validate_language(value):
 
 
 @pytest.mark.parametrize("value", [
-    "2019-3-8",
+    "19-3-8",
     "03-08-2019",
     "08-03-2019",
-    "2019-08-03",
-    "2019-03-11",
+    "2019-29-03",
+    "",
 ])
 def test_get_all_fixtures_validate_date(value):
     with pytest.raises(ValueError) as ex:
             client = sdk.livescoreapi.LivescoresAPI('http://livescore-api.com/api-client/', '5555YYYYgggg21aD', '5555YYYYgggg21aDKKKK2222ssssYYYY', 'ru')
             client.get_all_fixtures(1, value, 1)
-    assert 'Invalid date format' in str(ex)
+    assert 'Incorrect data format, should be %Y-%m-%d' in str(ex)
