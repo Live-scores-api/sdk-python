@@ -37,11 +37,12 @@ def test_init_api_key_is_not_16_characters(value):
 
 def test_init_ok():
     client = sdk.livescoreapi.LivescoresAPI('http://livescore-api.com/api-client/', '5555YYYYgggg21aD', '5555YYYYgggg21aDKKKK2222ssssYYYY', 'ru')
-    
+    client.get_all_fixtures(1, '2019-08-03', 1)
     assert client.api_url == 'http://livescore-api.com/api-client/'
     assert client.api_key == '5555YYYYgggg21aD'
     assert client.api_secret == '5555YYYYgggg21aDKKKK2222ssssYYYY'
     assert client.language == 'ru'
+    
 
 
 @pytest.mark.parametrize("value", [
@@ -68,13 +69,6 @@ def test_validate_language(value):
              sdk.livescoreapi.LivescoresAPI('http://livescore-api.com/api-client/', '5555YYYYgggg21aD', '5555YYYYgggg21aDKKKK2222ssssYYYY', value)
     assert 'Language ID is not supported' in str(ex)
 
-
-#@pytest.fixture
-def test_get_all_fixtures_ok():
-    client1 = sdk.livescoreapi.LivescoresAPI.get_all_fixtures('1', '2019-03-08', '1')
-    assert client1.league_id == '1'
-    assert client1.date == '2019-03-08'
-    assert client1.page == '1'
 
 
 
