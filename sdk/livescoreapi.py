@@ -293,6 +293,17 @@ class LivescoresAPI:
         return list_of_leagues_with_fixtures.json()['data']['leagues']
 
 
+    def get_live_events(self, match_id):
+        url = '{}scores/events.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
+
+        if match_id is not None:
+            self.validate_match_id(match_id)
+            url = url + '&id=' + str(match_id)
+
+        live_events = requests.get(url)
+        return live_events.json()['data']['event']
+
+
     def validate_match_id(self, match_id):
         
         if match_id is None:
@@ -303,14 +314,4 @@ class LivescoresAPI:
 
         if match_id < 1:
             raise ValueError("Match ID must be a positive number")
-
-
-    def get_live_events(self, match_id):
-        url = '{}scores/events.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
-
-        if match_id is not None:
-            self.validate_match_id(match_id)
-            url = url + '&id=' + str(match_id)
-
-        live_events = requests.get(url)
-        return live_events.json()['data']['event']
+            
