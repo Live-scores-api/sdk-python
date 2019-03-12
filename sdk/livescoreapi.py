@@ -220,6 +220,7 @@ class LivescoresAPI:
         if self.language is not None:
             url = url + '&lang=' + self.language
 
+
         history_fixtures = requests.get(url)
         return history_fixtures.json()['data']['match']
 
@@ -259,9 +260,9 @@ class LivescoresAPI:
 
 
     def get_history_matches_for_last_weekend(self, from_date, to_date, page, language): 
-        sat = str(datetime.date.today() - datetime.timedelta(7+((datetime.date.today().weekday() + 1) % 7)-6))
-        sun = str(datetime.date.today() - datetime.timedelta(7+(datetime.date.today().weekday() + 1) % 7))
-        return self.get_history_matches(sat, sun, None, page, language)
+        fri = str(datetime.date.today() - datetime.timedelta(7+((datetime.date.today().weekday() + 1) % 7)-5))
+        sun = str(datetime.date.today() - datetime.timedelta(7+((datetime.date.today().weekday() + 1) % 7)-7))
+        return self.get_history_matches(fri, sun, None, page, language)
 
     
     def get_history_matches_for_last_month(self, page, language):
