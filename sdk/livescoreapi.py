@@ -273,3 +273,24 @@ class LivescoresAPI:
     def get_history_matches_for_last_year(self, page, language):
         last_year= str(datetime.date.today() - datetime.timedelta(days=365))[:10]
         return self.get_history_matches(last_year, None, None, page, language)
+
+
+    def get_all_countries(self):
+        url = '{}countries/list.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
+        list_of_countries = requests.get(url)
+        return list_of_countries.json()['data']['country']
+
+
+    def get_all_leagues(self):
+        url = '{}leagues/list.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
+        list_of_leagues = requests.get(url)
+        return list_of_leagues.json()['data']['league']
+    
+
+    def get_all_leagues_with_fixtures(self):
+        url = '{}fixtures/leagues.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
+        list_of_leagues_with_fixtures = requests.get(url)
+        return list_of_leagues_with_fixtures.json()['data']['leagues']
+
+
+   
