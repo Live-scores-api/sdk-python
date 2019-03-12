@@ -257,6 +257,12 @@ class LivescoresAPI:
         last_week = str(datetime.date.today() - datetime.timedelta(days=7))[:10]
         return self.get_history_matches(last_week, None, None, page, language)
 
+
+    def get_history_matches_for_last_weekend(self, from_date, to_date, page, language): 
+        sat = str(datetime.date.today() - datetime.timedelta(7+((datetime.date.today().weekday() + 1) % 7)-6))
+        sun = str(datetime.date.today() - datetime.timedelta(7+(datetime.date.today().weekday() + 1) % 7))
+        return self.get_history_matches(sat, sun, None, page, language)
+
     
     def get_history_matches_for_last_month(self, page, language):
         last_month = str(datetime.date.today() - datetime.timedelta(days=30))[:10]
