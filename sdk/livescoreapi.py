@@ -293,4 +293,7 @@ class LivescoresAPI:
         return list_of_leagues_with_fixtures.json()['data']['leagues']
 
 
-   
+    def get_live_events(self):
+        url = '{}scores/events.json?key={}&secret={}&id=129180'.format(self.api_url, self.api_key, self.api_secret)
+        live_events = requests.get(url)
+        return live_events.json()['data']['event']
