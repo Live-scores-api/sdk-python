@@ -74,25 +74,37 @@ class LivescoresAPI:
 
         if "livescore-api.com" not in api_url:
             raise ValueError("API URL does not contain livescore-api.com")
+
     
+    def call_livescores_api(self, url):
+        while True:
+            try:
+                livescores = requests.get(url, timeout=2)   
+                break
+            except ValueError:
+                raise ValueError("Failed to make the request")
+    
+        return livescores.json()['data']['match']
+
+
     def get_all_livescores(self, country_id, league_id):
         url = '{}scores/live.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
-
+        
         if country_id is not None:
             self.validate_country(country_id)
             url = url + '&country=' + str(country_id)
-
-        if self.language is not None:
-            url = url + '&lang=' + self.language
 
         if league_id is not None:
             self.validate_league(league_id)
             url = url + '&league=' + str(league_id)
 
-        livescores = requests.get(url)
-        return livescores.json()['data']['match']
+        if self.language is not None:
+            url = url + '&lang=' + self.language
 
+        request = self.call_livescores_api(url)
+        return request
 
+   
     def validate_country(self, country_id):
 
         if country_id is None:
@@ -314,4 +326,3 @@ class LivescoresAPI:
 
         if match_id < 1:
             raise ValueError("Match ID must be a positive number")
-            
