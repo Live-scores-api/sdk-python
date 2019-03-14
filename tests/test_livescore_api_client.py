@@ -1,7 +1,6 @@
 import sdk.livescoreapi
 import pytest
 
-
 def test_init_api_key_is_none():
     with pytest.raises(ValueError) as ex:
         sdk.livescoreapi.LivescoresAPI('http://livescore-api.com/api-client/', None, '5555YYYYgggg21aDKKKK2222ssssYYYY', 'en')
@@ -37,11 +36,13 @@ def test_init_api_key_is_not_16_characters(value):
 
 
 def test_init_ok():
-    client = sdk.livescoreapi.LivescoresAPI('http://livescore-api.com/api-client/', '5555YYYYgggg21aD', '5555YYYYgggg21aDKKKK2222ssssYYYY', 'en')
+    client = sdk.livescoreapi.LivescoresAPI('http://livescore-api.com/api-client/', '5555YYYYgggg21aD', '5555YYYYgggg21aDKKKK2222ssssYYYY', 'ru')
+    
     assert client.api_url == 'http://livescore-api.com/api-client/'
     assert client.api_key == '5555YYYYgggg21aD'
     assert client.api_secret == '5555YYYYgggg21aDKKKK2222ssssYYYY'
-    assert client.lang == 'en'
+    assert client.language == 'ru'
+    
 
 
 @pytest.mark.parametrize("value", [
@@ -67,3 +68,19 @@ def test_validate_language(value):
     with pytest.raises(ValueError) as ex:
              sdk.livescoreapi.LivescoresAPI('http://livescore-api.com/api-client/', '5555YYYYgggg21aD', '5555YYYYgggg21aDKKKK2222ssssYYYY', value)
     assert 'Language ID is not supported' in str(ex)
+
+
+
+
+@pytest.mark.parametrize("value", [
+    "19-3-8",
+    "03-08-2019",
+    "08-03-2019",
+    "2019-29-03",
+    "",
+])
+def test_get_all_fixtures_validate_date(value):
+    with pytest.raises(ValueError) as ex:
+            client = sdk.livescoreapi.LivescoresAPI('http://livescore-api.com/api-client/', '5555YYYYgggg21aD', '5555YYYYgggg21aDKKKK2222ssssYYYY', 'ru')
+            client.get_all_fixtures(1, value, 1)
+    assert 'Incorrect data format, should be %Y-%m-%d' in str(ex)

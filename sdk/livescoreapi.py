@@ -135,3 +135,141 @@ class LivescoresAPI:
                 
     def get_livescores_by_league(self, league_id):
         return self.get_all_livescores(None, league_id)
+
+
+    def validate_date(self, date):
+
+        if date is None:
+            raise ValueError('Date must be defined')
+
+        if not (isinstance(date, str)):
+            raise ValueError("Date must be a string")
+
+        try:
+            datetime.datetime.strptime(date, '%Y-%m-%d')
+        except ValueError:
+            raise ValueError("Incorrect data format, should be %Y-%m-%d")
+
+    def validate_page(self, page):
+        
+        if page is None:
+             raise ValueError('Page ID must be defined')
+
+        if not (isinstance(page, int)):
+            raise ValueError("Page ID must be a integer")
+
+        if page < 1:
+            raise ValueError("Page ID must be a positive number")
+
+
+    def get_all_fixtures(self, league_id, date, page):
+        url = '{}fixtures/matches.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
+
+        if league_id is not None:
+            self.validate_league(league_id)
+            url = url + '&league=' + str(league_id)
+
+        if date is not None:
+            self.validate_date(date)
+            url = url + '&date=' + str(date)
+
+        if self.language is not None:
+            url = url + '&lang=' + self.language
+
+        if page is not None:
+            self.validate_page(page)
+            url = url + '&page=' + str(page)
+
+        fixtures = requests.get(url)
+        return fixtures.json()['data']['fixtures']
+
+
+    def get_fixtrures_by_league(self, league_id, page):
+        return self.get_all_fixtures(league_id, None, page)
+
+
+    def get_today_fixtures(self, page):
+        today = str(datetime.datetime.today())[:10]
+        return self.get_all_fixtures(None, today, page)
+
+
+    def get_tomorrow_fixtures(self, page):
+        tomorrow = str(datetime.date.today() + datetime.timedelta(days=1))[:10]
+        return self.get_all_fixtures(None, tomorrow, page)
+
+
+    def get_history_matches(self, from_date, to_date, league_id, page, language):
+        url = '{}scores/history.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
+
+        if from_date is not None:
+            self.validate_date(from_date)
+            url = url + '&from=' + str(from_date)
+
+        if to_date is not None:
+            self.validate_date(to_date)
+            url = url + '&to=' + str(to_date)
+        
+        if league_id is not None:
+            self.validate_league(league_id)
+            url = url + '&league=' + str(league_id)
+
+        if page is not None:
+            self.validate_page(page)
+            url = url + '&page=' + str(page)
+
+        if self.language is not None:
+            url = url + '&lang=' + self.language
+
+
+        history_fixtures = requests.get(url)
+        return history_fixtures.json()['data']['match']
+
+
+    def get_history_matches_by_league(self, league_id, page, language):
+        return self.get_history_matches(None, None, league_id, page, language)
+
+
+    def get_history_matches_by_league_and_from_date(self, from_date, league_id, page, language):
+        return self.get_history_matches(from_date, None, league_id, page, language)
+
+
+    def get_history_matches_by_league_and_to_date(self, to_date, league_id, page, language):
+        return self.get_history_matches(None, to_date, league_id, page, language)
+
+
+    def get_history_matches_from_date(self, from_date, page, language):
+        return self.get_history_matches(from_date, None, None, page, language)
+
+    
+    def get_history_matches_to_date(self, to_date, page, language):
+        return self.get_history_matches(None, to_date, None, page, language)
+
+    
+    def get_history_matches_from_date_to_date(self, from_date, to_date, page, language):
+        return self.get_history_matches(from_date, to_date, None, page, language)
+
+
+    def get_history_matches_for_yesterday(self, page, language):
+        yesterday = str(datetime.date.today() - datetime.timedelta(days=1))[:10]
+        return self.get_history_matches(yesterday, None, None, page, language)
+
+
+    def get_history_matches_for_last_week(self, page, language):
+        last_week = str(datetime.date.today() - datetime.timedelta(days=7))[:10]
+        return self.get_history_matches(last_week, None, None, page, language)
+
+
+    def get_history_matches_for_last_weekend(self, from_date, to_date, page, language): 
+        fri = str(datetime.date.today() - datetime.timedelta(7+((datetime.date.today().weekday() + 1) % 7)-5))
+        sun = str(datetime.date.today() - datetime.timedelta(7+((datetime.date.today().weekday() + 1) % 7)-7))
+        return self.get_history_matches(fri, sun, None, page, language)
+
+    
+    def get_history_matches_for_last_month(self, page, language):
+        last_month = str(datetime.date.today() - datetime.timedelta(days=30))[:10]
+        return self.get_history_matches(last_month, None, None, page, language)
+
+    
+    def get_history_matches_for_last_year(self, page, language):
+        last_year= str(datetime.date.today() - datetime.timedelta(days=365))[:10]
+        return self.get_history_matches(last_year, None, None, page, language)
