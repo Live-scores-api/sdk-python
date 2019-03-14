@@ -196,8 +196,8 @@ class LivescoresAPI:
             self.validate_page(page)
             url = url + '&page=' + str(page)
 
-        fixtures = requests.get(url)
-        return fixtures.json()['data']['fixtures']
+        request = self.call_api(url)
+        return request.json()['data']['fixtures']
 
 
     def get_fixtrures_by_league(self, league_id, page):
@@ -236,9 +236,8 @@ class LivescoresAPI:
         if self.language is not None:
             url = url + '&lang=' + self.language
 
-
-        history_fixtures = requests.get(url)
-        return history_fixtures.json()['data']['match']
+        request = self.call_api(url)
+        return request.json()['data']['match']
 
 
     def get_history_matches_by_league(self, league_id, page, language):
@@ -316,8 +315,8 @@ class LivescoresAPI:
             self.validate_match_id(match_id)
             url = url + '&id=' + str(match_id)
 
-        live_events = requests.get(url)
-        return live_events.json()['data']['event']
+        request = self.call_api(url)
+        return request.json()['data']['event']
 
 
     def validate_match_id(self, match_id):
