@@ -3,11 +3,13 @@ import requests
 import re
 import datetime
 from urllib.parse import urlparse
+import sys
 
 
 class LivescoresAPI: 
 
     language_list = ['ar', 'ru', 'fa']
+    error_list = [400, 401, 402, 404, 405, 412, 417, 420, 429, 500, 501, 503]
     api_url = ''
     api_key = ''
     api_secret = ''
@@ -76,15 +78,17 @@ class LivescoresAPI:
             raise ValueError("API URL does not contain livescore-api.com")
 
     
-    def call_livescores_api(self, url):
-        while True:
+    def call_api(self, url):
+        for i in range(3):
             try:
-                livescores = requests.get(url, timeout=2)   
+                response = requests.get(url)  
+                if response.status_code in self.error_list:
+                    raise Exception(response.json()['error'])
                 break
-            except ValueError:
-                raise ValueError("Failed to make the request")
-    
-        return livescores.json()['data']['match']
+            except requests.exceptions.RequestException :
+                if i == 2:
+                    raise Exception('Could not connect to server')
+        return response
 
 
     def get_all_livescores(self, country_id, league_id):
@@ -101,8 +105,8 @@ class LivescoresAPI:
         if self.language is not None:
             url = url + '&lang=' + self.language
 
-        request = self.call_livescores_api(url)
-        return request
+        request = self.call_api(url)
+        return request.json()['data']['match']
 
    
     def validate_country(self, country_id):
