@@ -273,3 +273,45 @@ class LivescoresAPI:
     def get_history_matches_for_last_year(self, page, language):
         last_year= str(datetime.date.today() - datetime.timedelta(days=365))[:10]
         return self.get_history_matches(last_year, None, None, page, language)
+
+
+    def get_all_countries(self):
+        url = '{}countries/list.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
+        list_of_countries = requests.get(url)
+        return list_of_countries.json()['data']['country']
+
+
+    def get_all_leagues(self):
+        url = '{}leagues/list.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
+        list_of_leagues = requests.get(url)
+        return list_of_leagues.json()['data']['league']
+    
+
+    def get_all_leagues_with_fixtures(self):
+        url = '{}fixtures/leagues.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
+        list_of_leagues_with_fixtures = requests.get(url)
+        return list_of_leagues_with_fixtures.json()['data']['leagues']
+
+
+    def get_live_events(self, match_id):
+        url = '{}scores/events.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
+
+        if match_id is not None:
+            self.validate_match_id(match_id)
+            url = url + '&id=' + str(match_id)
+
+        live_events = requests.get(url)
+        return live_events.json()['data']['event']
+
+
+    def validate_match_id(self, match_id):
+        
+        if match_id is None:
+             raise ValueError('Match ID must be defined')
+
+        if not (isinstance(match_id, int)):
+            raise ValueError("Match ID must be a integer")
+
+        if match_id < 1:
+            raise ValueError("Match ID must be a positive number")
+            
