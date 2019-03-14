@@ -3,7 +3,6 @@ import requests
 import re
 import datetime
 from urllib.parse import urlparse
-import sys
 
 
 class LivescoresAPI: 
@@ -77,7 +76,6 @@ class LivescoresAPI:
         if "livescore-api.com" not in api_url:
             raise ValueError("API URL does not contain livescore-api.com")
 
-    
     def call_api(self, url):
         for i in range(3):
             try:
@@ -88,12 +86,11 @@ class LivescoresAPI:
             except requests.exceptions.RequestException :
                 if i == 2:
                     raise Exception('Could not connect to server')
-        return response
+        return response.json()
 
 
     def get_all_livescores(self, country_id, league_id):
         url = '{}scores/live.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
-        
         if country_id is not None:
             self.validate_country(country_id)
             url = url + '&country=' + str(country_id)
@@ -105,8 +102,8 @@ class LivescoresAPI:
         if self.language is not None:
             url = url + '&lang=' + self.language
 
-        request = self.call_api(url)
-        return request.json()['data']['match']
+        response = self.call_api(url)
+        return response['data']['match']
 
    
     def validate_country(self, country_id):
@@ -180,7 +177,6 @@ class LivescoresAPI:
 
     def get_all_fixtures(self, league_id, date, page):
         url = '{}fixtures/matches.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
-
         if league_id is not None:
             self.validate_league(league_id)
             url = url + '&league=' + str(league_id)
@@ -196,8 +192,8 @@ class LivescoresAPI:
             self.validate_page(page)
             url = url + '&page=' + str(page)
 
-        request = self.call_api(url)
-        return request.json()['data']['fixtures']
+        response = self.call_api(url)
+        return response['data']['fixtures']
 
 
     def get_fixtrures_by_league(self, league_id, page):
@@ -216,7 +212,6 @@ class LivescoresAPI:
 
     def get_history_matches(self, from_date, to_date, league_id, page, language):
         url = '{}scores/history.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
-
         if from_date is not None:
             self.validate_date(from_date)
             url = url + '&from=' + str(from_date)
@@ -236,8 +231,8 @@ class LivescoresAPI:
         if self.language is not None:
             url = url + '&lang=' + self.language
 
-        request = self.call_api(url)
-        return request.json()['data']['match']
+        response = self.call_api(url)
+        return response['data']['match']
 
 
     def get_history_matches_by_league(self, league_id, page, language):
@@ -292,31 +287,30 @@ class LivescoresAPI:
 
     def get_all_countries(self):
         url = '{}countries/list.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
-        list_of_countries = requests.get(url)
-        return list_of_countries.json()['data']['country']
+        response = self.call_api(url)
+        return response['data']['country']
 
 
     def get_all_leagues(self):
         url = '{}leagues/list.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
-        list_of_leagues = requests.get(url)
-        return list_of_leagues.json()['data']['league']
+        response = self.call_api(url)
+        return response['data']['league']
     
 
     def get_all_leagues_with_fixtures(self):
         url = '{}fixtures/leagues.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
-        list_of_leagues_with_fixtures = requests.get(url)
-        return list_of_leagues_with_fixtures.json()['data']['leagues']
+        response = self.call_api(url)
+        return response['data']['leagues']
 
 
     def get_live_events(self, match_id):
         url = '{}scores/events.json?key={}&secret={}'.format(self.api_url, self.api_key, self.api_secret)
-
         if match_id is not None:
             self.validate_match_id(match_id)
             url = url + '&id=' + str(match_id)
 
-        request = self.call_api(url)
-        return request.json()['data']['event']
+        response = self.call_api(url)
+        return response['data']['event']
 
 
     def validate_match_id(self, match_id):
