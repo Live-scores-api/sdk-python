@@ -291,11 +291,19 @@ class LivescoresAPI:
         return response['data']['country']
 
 
-    def get_all_leagues(self):
+    def get_all_leagues(self, country_id):
         url = '{}leagues/list.json?key={}&secret={}&package=python'.format(self.api_url, self.api_key, self.api_secret)
+        if country_id is not None:
+            self.validate_country(country_id)
+            url = url + '&country=' + str(country_id)
+
         response = self.call_api(url)
         return response['data']['league']
-    
+
+
+    def get_all_leagues_by_country(self, country_id):
+        return self.get_all_leagues(country_id)
+
 
     def get_all_leagues_with_fixtures(self):
         url = '{}fixtures/leagues.json?key={}&secret={}&package=python'.format(self.api_url, self.api_key, self.api_secret)
